@@ -26,3 +26,101 @@ body {
   z-index: 100;
   font-size: 12px;
 }
+
+/* SnippetList */
+.snippet-list {
+  width: 240px;
+  min-width: 180px;
+  display: flex;
+  flex-direction: column;
+  background: var(--vscode-sideBar-background);
+  border-right: 1px solid var(--vscode-panel-border);
+  height: 100vh;
+}
+
+.list-toolbar {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 8px;
+  border-bottom: 1px solid var(--vscode-panel-border);
+}
+
+.search-input, .scope-select {
+  width: 100%;
+  background: var(--vscode-input-background);
+  color: var(--vscode-input-foreground);
+  border: 1px solid var(--vscode-input-border, transparent);
+  border-radius: 2px;
+  padding: 4px 6px;
+  font-size: 12px;
+  outline: none;
+}
+
+.search-input:focus, .scope-select:focus {
+  border-color: var(--vscode-focusBorder);
+}
+
+.new-btn {
+  background: var(--vscode-button-background);
+  color: var(--vscode-button-foreground);
+  border: none;
+  border-radius: 2px;
+  padding: 5px 8px;
+  cursor: pointer;
+  font-size: 12px;
+  text-align: center;
+}
+
+.new-btn:hover { background: var(--vscode-button-hoverBackground); }
+
+.list-items { flex: 1; overflow-y: auto; }
+
+.snippet-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 10px;
+  cursor: pointer;
+  border-left: 2px solid transparent;
+}
+
+.snippet-row:hover { background: var(--vscode-list-hoverBackground); }
+
+.snippet-row.active {
+  background: var(--vscode-list-activeSelectionBackground);
+  color: var(--vscode-list-activeSelectionForeground);
+  border-left-color: var(--vscode-focusBorder);
+}
+
+.snippet-prefix {
+  font-weight: 600;
+  color: var(--vscode-symbolIcon-functionForeground, #dcdcaa);
+  flex-shrink: 0;
+  font-size: 12px;
+}
+
+.snippet-desc {
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 11px;
+  opacity: 0.8;
+}
+
+.snippet-scope-badge {
+  font-size: 10px;
+  padding: 1px 5px;
+  background: var(--vscode-badge-background);
+  color: var(--vscode-badge-foreground);
+  border-radius: 10px;
+  flex-shrink: 0;
+}
+
+.empty-state {
+  padding: 16px 10px;
+  font-size: 12px;
+  opacity: 0.5;
+  text-align: center;
+}
