@@ -28,7 +28,7 @@ export class PanelManager {
     }
 
     this.panel = vscode.window.createWebviewPanel(
-      'livetemnSnippetManager',
+      'livetemSnippetManager',
       'Snippet Manager',
       vscode.ViewColumn.One,
       {
@@ -64,6 +64,7 @@ export class PanelManager {
 
     this.panel.onDidDispose(() => {
       this.panel = undefined;
+      PanelManager.instance = undefined;
     });
 
     this.sendInit();
@@ -74,14 +75,28 @@ export class PanelManager {
     }
   }
 
+  dispose(): void {
+    this.panel?.dispose();
+  }
+
   private async sendInit(): Promise<void> {
-    const snippets = await this.provider.getAllSnippets();
-    this.panel?.webview.postMessage({ type: 'init', snippets });
+    try {
+      const snippets = await this.provider.getAllSnippets();
+      this.panel?.webview.postMessage({ type: 'init', snippets });
+    } catch (e) {
+      this.panel?.webview.postMessage({ type: 'error', message: String(e) });
+    }
   }
 
   private getHtml(webview: vscode.Webview): string {
     const distPath = path.join(this.extensionUri.fsPath, 'webview', 'dist');
-    let html = fs.readFileSync(path.join(distPath, 'index.html'), 'utf-8');
+    let html: string;
+    try {
+      html = fs.readFileSync(path.join(distPath, 'index.html'), 'utf-8');
+    } catch {
+      vscode.window.showErrorMessage('Snippet Manager: webview build not found. Run `npm run build:webview` first.');
+      return '<html><body>Build not found. Run npm run build:webview.</body></html>';
+    }
 
     const distUri = webview.asWebviewUri(
       vscode.Uri.joinPath(this.extensionUri, 'webview', 'dist')
