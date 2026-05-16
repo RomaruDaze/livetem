@@ -5,6 +5,7 @@ export interface Snippet {
   description: string;
   body: string[];
   scope: string;
+  /** Absolute path to the .json file this snippet is stored in. Empty string for unsaved new snippets. */
   source: string;
 }
 
