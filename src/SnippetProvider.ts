@@ -1,0 +1,105 @@
+import * as fs from 'fs/promises';
+import * as path from 'path';
+import * as os from 'os';
+import { Snippet } from './types';
+
+export function getVSCodeSnippetsDir(): string {
+  switch (process.platform) {
+    case 'win32':
+      return path.join(process.env['APPDATA'] ?? os.homedir(), 'Code', 'User', 'snippets');
+    case 'darwin':
+      return path.join(os.homedir(), 'Library', 'Application Support', 'Code', 'User', 'snippets');
+    default:
+      return path.join(os.homedir(), '.config', 'Code', 'User', 'snippets');
+  }
+}
+
+interface RawSnippetFile {
+  [name: string]: {
+    prefix: string | string[];
+    body: string | string[];
+    description?: string;
+  };
+}
+
+function parseSnippetFile(raw: RawSnippetFile, scope: string, filePath: string): Snippet[] {
+  return Object.entries(raw).map(([name, entry]) => ({
+    id: crypto.randomUUID(),
+    name,
+    prefix: Array.isArray(entry.prefix) ? entry.prefix[0] : entry.prefix,
+    description: entry.description ?? '',
+    body: Array.isArray(entry.body) ? entry.body : [entry.body],
+    scope,
+    source: filePath,
+  }));
+}
+
+export class SnippetProvider {
+  constructor(
+    private readonly snippetsDir: string,
+    private readonly workspaceDir?: string
+  ) {}
+
+  static create(workspaceDir?: string): SnippetProvider {
+    return new SnippetProvider(getVSCodeSnippetsDir(), workspaceDir);
+  }
+
+  resolveSourcePath(scope: string): string {
+    if (scope === 'global') {
+      return path.join(this.snippetsDir, 'global.code-snippets');
+    }
+    if (scope === 'workspace') {
+      const wsDir = this.workspaceDir ?? this.snippetsDir;
+      return path.join(wsDir, 'workspace.code-snippets');
+    }
+    return path.join(this.snippetsDir, `${scope}.json`);
+  }
+
+  async getAllSnippets(): Promise<Snippet[]> {
+    const results: Snippet[] = [];
+
+    let files: string[] = [];
+    try {
+      files = await fs.readdir(this.snippetsDir);
+    } catch {
+      // snippetsDir doesn't exist — still process workspaceDir below
+    }
+
+    for (const file of files) {
+      const filePath = path.join(this.snippetsDir, file);
+      const isGlobal = file === 'global.code-snippets';
+      const isLanguage = file.endsWith('.json');
+      if (!isGlobal && !isLanguage) { continue; }
+
+      const scope = isGlobal ? 'global' : path.basename(file, '.json');
+      try {
+        const content = await fs.readFile(filePath, 'utf-8');
+        const raw: RawSnippetFile = JSON.parse(content);
+        results.push(...parseSnippetFile(raw, scope, filePath));
+      } catch {
+        // Malformed JSON — skip silently
+      }
+    }
+
+    if (this.workspaceDir) {
+      try {
+        const wsFiles = await fs.readdir(this.workspaceDir);
+        for (const file of wsFiles) {
+          if (!file.endsWith('.code-snippets')) { continue; }
+          const filePath = path.join(this.workspaceDir, file);
+          try {
+            const content = await fs.readFile(filePath, 'utf-8');
+            const raw: RawSnippetFile = JSON.parse(content);
+            results.push(...parseSnippetFile(raw, 'workspace', filePath));
+          } catch {
+            // skip malformed
+          }
+        }
+      } catch {
+        // workspaceDir doesn't exist
+      }
+    }
+
+    return results;
+  }
+}
