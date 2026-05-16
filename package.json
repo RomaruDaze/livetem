@@ -16,6 +16,7 @@
   },
   "scripts": {
     "compile":       "tsc -p ./",
+    "watch":         "tsc -p ./ --watch",
     "build:webview": "cd webview && npm run build",
     "build":         "npm run compile && npm run build:webview",
     "test":          "vitest run src/test",
