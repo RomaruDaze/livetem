@@ -58,6 +58,20 @@ describe('SnippetProvider.getAllSnippets', () => {
     expect(snippets).toEqual([]);
   });
 
+  it('reads named .code-snippets files from snippetsDir as global scope', async () => {
+    await fs.writeFile(
+      path.join(tmpDir, 'mytweaks.code-snippets'),
+      JSON.stringify({
+        'debug': { prefix: 'dbg', body: ['console.debug($1);'], description: 'debug log' }
+      })
+    );
+    const provider = new SnippetProvider(tmpDir);
+    const snippets = await provider.getAllSnippets();
+    expect(snippets).toHaveLength(1);
+    expect(snippets[0].scope).toBe('global');
+    expect(snippets[0].prefix).toBe('dbg');
+  });
+
   it('reads workspace snippets when workspacePath is provided', async () => {
     const workspaceDir = path.join(tmpDir, '.vscode');
     await fs.mkdir(workspaceDir);

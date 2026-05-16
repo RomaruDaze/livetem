@@ -26,6 +26,8 @@ function parseSnippetFile(raw: RawSnippetFile, scope: string, filePath: string):
   return Object.entries(raw).map(([name, entry]) => ({
     id: crypto.randomUUID(),
     name,
+    // VS Code supports multi-prefix snippets; we take the first.
+    // The UI is built around a single-prefix model.
     prefix: Array.isArray(entry.prefix) ? entry.prefix[0] : entry.prefix,
     description: entry.description ?? '',
     body: Array.isArray(entry.body) ? entry.body : [entry.body],
@@ -49,6 +51,8 @@ export class SnippetProvider {
       return path.join(this.snippetsDir, 'global.code-snippets');
     }
     if (scope === 'workspace') {
+      // If no workspace is open, fall back to user snippets dir.
+      // The UI should hide 'workspace' scope when there is no workspace.
       const wsDir = this.workspaceDir ?? this.snippetsDir;
       return path.join(wsDir, 'workspace.code-snippets');
     }
@@ -67,11 +71,11 @@ export class SnippetProvider {
 
     for (const file of files) {
       const filePath = path.join(this.snippetsDir, file);
-      const isGlobal = file === 'global.code-snippets';
+      const isCodeSnippets = file.endsWith('.code-snippets');
       const isLanguage = file.endsWith('.json');
-      if (!isGlobal && !isLanguage) { continue; }
+      if (!isCodeSnippets && !isLanguage) { continue; }
 
-      const scope = isGlobal ? 'global' : path.basename(file, '.json');
+      const scope = isCodeSnippets ? 'global' : path.basename(file, '.json');
       try {
         const content = await fs.readFile(filePath, 'utf-8');
         const raw: RawSnippetFile = JSON.parse(content);
