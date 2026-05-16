@@ -107,7 +107,7 @@ export class SnippetProvider {
     return results;
   }
 
-  async saveSnippet(snippet: Snippet): Promise<Snippet> {
+  async saveSnippet(snippet: Snippet, previousName?: string): Promise<Snippet> {
     await fs.mkdir(path.dirname(snippet.source), { recursive: true });
 
     let existing: RawSnippetFile = {};
@@ -115,6 +115,11 @@ export class SnippetProvider {
       existing = JSON.parse(await fs.readFile(snippet.source, 'utf-8'));
     } catch {
       // File doesn't exist yet — start fresh
+    }
+
+    // Remove old key if the snippet was renamed
+    if (previousName && previousName !== snippet.name) {
+      delete existing[previousName];
     }
 
     existing[snippet.name] = {
@@ -131,8 +136,9 @@ export class SnippetProvider {
     let existing: RawSnippetFile = {};
     try {
       existing = JSON.parse(await fs.readFile(source, 'utf-8'));
-    } catch {
-      return; // File gone — nothing to do
+    } catch (err: unknown) {
+      if ((err as NodeJS.ErrnoException).code === 'ENOENT') { return; }
+      throw err;
     }
 
     delete existing[name];

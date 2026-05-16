@@ -138,6 +138,35 @@ describe('SnippetProvider.saveSnippet', () => {
     const content = JSON.parse(await fs.readFile(filePath, 'utf-8'));
     expect(content['x']).toBeDefined();
   });
+
+  it('removes the old key when previousName differs from snippet.name', async () => {
+    const filePath = path.join(tmpDir, 'global.code-snippets');
+    await fs.writeFile(filePath, JSON.stringify({
+      'old name': { prefix: 'on', body: ['old'], description: '' },
+    }));
+    const provider = new SnippetProvider(tmpDir);
+    await provider.saveSnippet(
+      { id: 'x', name: 'new name', prefix: 'nn', description: '', body: ['new'], scope: 'global', source: filePath },
+      'old name'
+    );
+    const content = JSON.parse(await fs.readFile(filePath, 'utf-8'));
+    expect(content['old name']).toBeUndefined();
+    expect(content['new name']).toBeDefined();
+  });
+
+  it('does not remove any key when previousName equals snippet.name', async () => {
+    const filePath = path.join(tmpDir, 'global.code-snippets');
+    await fs.writeFile(filePath, JSON.stringify({
+      'same': { prefix: 'sm', body: ['same'], description: '' },
+    }));
+    const provider = new SnippetProvider(tmpDir);
+    await provider.saveSnippet(
+      { id: 'x', name: 'same', prefix: 'sm2', description: '', body: ['same'], scope: 'global', source: filePath },
+      'same'
+    );
+    const content = JSON.parse(await fs.readFile(filePath, 'utf-8'));
+    expect(content['same'].prefix).toBe('sm2');
+  });
 });
 
 describe('SnippetProvider.deleteSnippet', () => {
