@@ -41,6 +41,13 @@ export class PanelManager {
     this.panel.webview.html = this.getHtml(this.panel.webview);
 
     this.panel.webview.onDidReceiveMessage(async (msg: WebviewMessage) => {
+      if ((msg as any).type === 'ready') {
+        void this.sendInit();
+        if (startNew) {
+          this.panel?.webview.postMessage({ type: 'startNew' });
+        }
+        return;
+      }
       if (msg.type === 'save') {
         try {
           // Resolve source path for new snippets (source is empty string when isNew)
@@ -66,13 +73,6 @@ export class PanelManager {
       this.panel = undefined;
       PanelManager.instance = undefined;
     });
-
-    this.sendInit();
-
-    if (startNew) {
-      // Delay to let React mount before sending startNew
-      setTimeout(() => this.panel?.webview.postMessage({ type: 'startNew' }), 300);
-    }
   }
 
   dispose(): void {
