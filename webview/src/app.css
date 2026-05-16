@@ -1,0 +1,28 @@
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  background: var(--vscode-editor-background);
+  color: var(--vscode-foreground);
+  font-family: var(--vscode-font-family);
+  font-size: var(--vscode-font-size);
+  height: 100vh;
+  overflow: hidden;
+}
+
+.app {
+  display: flex;
+  height: 100vh;
+  position: relative;
+}
+
+.error-banner {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  background: var(--vscode-inputValidation-errorBackground);
+  color: var(--vscode-inputValidation-errorForeground);
+  border-bottom: 1px solid var(--vscode-inputValidation-errorBorder);
+  padding: 6px 12px;
+  cursor: pointer;
+  z-index: 100;
+  font-size: 12px;
+}
