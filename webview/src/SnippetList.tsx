@@ -55,8 +55,11 @@ export default function SnippetList({ snippets, selectedId, onSelect, onNew }: P
         {filtered.map(snippet => (
           <div
             key={snippet.id}
+            role="button"
+            tabIndex={0}
             className={`snippet-row ${snippet.id === selectedId ? 'active' : ''}`}
             onClick={() => onSelect(snippet.id)}
+            onKeyDown={e => { if (e.key === 'Enter' || e.key === ' ') onSelect(snippet.id); }}
           >
             <span className="snippet-prefix">{snippet.prefix}</span>
             <span className="snippet-desc">{snippet.description || snippet.name}</span>
