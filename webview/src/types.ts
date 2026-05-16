@@ -16,5 +16,5 @@ export type HostMessage =
   | { type: 'error';   message: string };
 
 export type WebviewMessage =
-  | { type: 'save';   snippet: Snippet }
+  | { type: 'save';   snippet: Snippet; previousName?: string }
   | { type: 'delete'; id: string; name: string; source: string };
