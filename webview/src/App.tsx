@@ -15,12 +15,13 @@ interface State {
 }
 
 type Action =
-  | { type: 'INIT';    snippets: Snippet[] }
-  | { type: 'SAVED';   snippet: Snippet }
-  | { type: 'DELETED'; id: string }
-  | { type: 'SELECT';  id: string }
+  | { type: 'INIT';          snippets: Snippet[] }
+  | { type: 'SAVED';         snippet: Snippet }
+  | { type: 'DELETED';       id: string }
+  | { type: 'SELECT';        id: string }
   | { type: 'NEW' }
-  | { type: 'ERROR';   message: string };
+  | { type: 'ERROR';         message: string }
+  | { type: 'DISMISS_ERROR' };
 
 function reducer(state: State, action: Action): State {
   switch (action.type) {
@@ -51,6 +52,8 @@ function reducer(state: State, action: Action): State {
       return { ...state, selectedId: null, isNew: true };
     case 'ERROR':
       return { ...state, error: action.message };
+    case 'DISMISS_ERROR':
+      return { ...state, error: null };
     default:
       return state;
   }
@@ -66,13 +69,13 @@ export default function App() {
     vscode.postMessage({ type: 'ready' });
 
     const handler = (event: MessageEvent) => {
-      const msg = event.data as HostMessage & { type: string };
+      const msg = event.data as HostMessage | { type: 'startNew' };
+      if (msg.type === 'startNew') { dispatch({ type: 'NEW' }); return; }
       switch (msg.type) {
-        case 'init':    dispatch({ type: 'INIT',    snippets: (msg as any).snippets }); break;
-        case 'saved':   dispatch({ type: 'SAVED',   snippet:  (msg as any).snippet  }); break;
-        case 'deleted': dispatch({ type: 'DELETED', id:       (msg as any).id       }); break;
-        case 'error':   dispatch({ type: 'ERROR',   message:  (msg as any).message  }); break;
-        case 'startNew': dispatch({ type: 'NEW' }); break;
+        case 'init':    dispatch({ type: 'INIT',    snippets: msg.snippets }); break;
+        case 'saved':   dispatch({ type: 'SAVED',   snippet:  msg.snippet  }); break;
+        case 'deleted': dispatch({ type: 'DELETED', id:       msg.id       }); break;
+        case 'error':   dispatch({ type: 'ERROR',   message:  msg.message  }); break;
       }
     };
     window.addEventListener('message', handler);
@@ -84,7 +87,7 @@ export default function App() {
   return (
     <div className="app">
       {state.error && (
-        <div className="error-banner" onClick={() => dispatch({ type: 'ERROR', message: '' })}>
+        <div className="error-banner" onClick={() => dispatch({ type: 'DISMISS_ERROR' })}>
           {state.error} ✕
         </div>
       )}
