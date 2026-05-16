@@ -106,4 +106,36 @@ export class SnippetProvider {
 
     return results;
   }
+
+  async saveSnippet(snippet: Snippet): Promise<Snippet> {
+    await fs.mkdir(path.dirname(snippet.source), { recursive: true });
+
+    let existing: RawSnippetFile = {};
+    try {
+      existing = JSON.parse(await fs.readFile(snippet.source, 'utf-8'));
+    } catch {
+      // File doesn't exist yet — start fresh
+    }
+
+    existing[snippet.name] = {
+      prefix: snippet.prefix,
+      body: snippet.body,
+      description: snippet.description,
+    };
+
+    await fs.writeFile(snippet.source, JSON.stringify(existing, null, 2), 'utf-8');
+    return snippet;
+  }
+
+  async deleteSnippet(name: string, source: string): Promise<void> {
+    let existing: RawSnippetFile = {};
+    try {
+      existing = JSON.parse(await fs.readFile(source, 'utf-8'));
+    } catch {
+      return; // File gone — nothing to do
+    }
+
+    delete existing[name];
+    await fs.writeFile(source, JSON.stringify(existing, null, 2), 'utf-8');
+  }
 }

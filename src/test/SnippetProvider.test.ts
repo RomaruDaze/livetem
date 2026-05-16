@@ -3,6 +3,7 @@ import * as fs from 'fs/promises';
 import * as path from 'path';
 import * as os from 'os';
 import { SnippetProvider } from '../SnippetProvider';
+import { Snippet } from '../types';
 
 let tmpDir: string;
 
@@ -85,5 +86,77 @@ describe('SnippetProvider.getAllSnippets', () => {
     const snippets = await provider.getAllSnippets();
     expect(snippets).toHaveLength(1);
     expect(snippets[0].scope).toBe('workspace');
+  });
+});
+
+describe('SnippetProvider.saveSnippet', () => {
+  it('creates a new snippet file and writes the snippet', async () => {
+    const provider = new SnippetProvider(tmpDir);
+    const snippet: Snippet = {
+      id: 'test-id',
+      name: 'my log',
+      prefix: 'ml',
+      description: 'my log',
+      body: ['console.log("hello");'],
+      scope: 'global',
+      source: path.join(tmpDir, 'global.code-snippets'),
+    };
+    const saved = await provider.saveSnippet(snippet);
+
+    const content = JSON.parse(await fs.readFile(snippet.source, 'utf-8'));
+    expect(content['my log']).toEqual({
+      prefix: 'ml',
+      body: ['console.log("hello");'],
+      description: 'my log',
+    });
+    expect(saved.id).toBe('test-id');
+  });
+
+  it('merges into an existing snippet file without overwriting other snippets', async () => {
+    const filePath = path.join(tmpDir, 'global.code-snippets');
+    await fs.writeFile(filePath, JSON.stringify({ existing: { prefix: 'ex', body: ['existing'], description: '' } }));
+
+    const provider = new SnippetProvider(tmpDir);
+    await provider.saveSnippet({
+      id: 'new-id', name: 'new', prefix: 'nw', description: '',
+      body: ['new'], scope: 'global', source: filePath,
+    });
+
+    const content = JSON.parse(await fs.readFile(filePath, 'utf-8'));
+    expect(Object.keys(content)).toHaveLength(2);
+    expect(content['existing'].prefix).toBe('ex');
+    expect(content['new'].prefix).toBe('nw');
+  });
+
+  it('creates intermediate directories if they do not exist', async () => {
+    const nestedDir = path.join(tmpDir, 'nested', 'dir');
+    const provider = new SnippetProvider(nestedDir);
+    const filePath = path.join(nestedDir, 'global.code-snippets');
+    await provider.saveSnippet({
+      id: 'x', name: 'x', prefix: 'x', description: '', body: ['x'], scope: 'global', source: filePath,
+    });
+    const content = JSON.parse(await fs.readFile(filePath, 'utf-8'));
+    expect(content['x']).toBeDefined();
+  });
+});
+
+describe('SnippetProvider.deleteSnippet', () => {
+  it('removes the named snippet from the file', async () => {
+    const filePath = path.join(tmpDir, 'global.code-snippets');
+    await fs.writeFile(filePath, JSON.stringify({
+      keep: { prefix: 'k', body: ['k'], description: '' },
+      remove: { prefix: 'r', body: ['r'], description: '' },
+    }));
+    const provider = new SnippetProvider(tmpDir);
+    await provider.deleteSnippet('remove', filePath);
+
+    const content = JSON.parse(await fs.readFile(filePath, 'utf-8'));
+    expect(content['keep']).toBeDefined();
+    expect(content['remove']).toBeUndefined();
+  });
+
+  it('does nothing if the file does not exist', async () => {
+    const provider = new SnippetProvider(tmpDir);
+    await expect(provider.deleteSnippet('x', path.join(tmpDir, 'nonexistent.json'))).resolves.not.toThrow();
   });
 });
