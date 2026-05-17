@@ -12,6 +12,7 @@ interface Props {
   onSave: (snippet: Snippet, previousName?: string) => void;
   onDelete: (snippet: Snippet) => void;
   onDraftChange?: (draft: Snippet | null) => void;
+  onDirtyChange?: (isDirty: boolean) => void;
 }
 
 type ScopeType = 'global' | 'workspace' | 'language';
@@ -26,7 +27,7 @@ function emptySnippet(): Snippet {
   return { id: crypto.randomUUID(), name: '', prefix: '', description: '', body: [''], scope: 'global', source: '' };
 }
 
-export default function EditorPane({ snippet, isNew, allSnippets, onSave, onDelete, onDraftChange }: Props) {
+export default function EditorPane({ snippet, isNew, allSnippets, onSave, onDelete, onDraftChange, onDirtyChange }: Props) {
   const [draft, setDraft] = useState<Snippet | null>(null);
   const [originalName, setOriginalName] = useState<string | undefined>(undefined);
   const [saveError, setSaveError] = useState('');
@@ -60,6 +61,20 @@ export default function EditorPane({ snippet, isNew, allSnippets, onSave, onDele
       onDraftChange?.(null);
     }
   }, [draft, isNew]);
+
+  const isDirty = isNew || (
+    draft !== null &&
+    snippet !== null && (
+      draft.prefix !== snippet.prefix ||
+      draft.description !== snippet.description ||
+      draft.scope !== snippet.scope ||
+      draft.body.join('\n') !== snippet.body.join('\n')
+    )
+  );
+
+  useEffect(() => {
+    onDirtyChange?.(isDirty);
+  }, [isDirty]);
 
   if (!draft) {
     return (
@@ -163,7 +178,7 @@ export default function EditorPane({ snippet, isNew, allSnippets, onSave, onDele
 
       <div className="action-bar">
         {saveError && <span className="save-error">{saveError}</span>}
-        <button className="btn-primary" onClick={handleSave}>Save</button>
+        <button className="btn-primary" onClick={handleSave} disabled={!isDirty}>Save</button>
         <button className="btn-secondary" onClick={handleDuplicate}>Duplicate</button>
         {snippet && !isNew && (
           confirmDelete ? (
