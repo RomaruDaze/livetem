@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { Snippet } from './types';
 import BodyEditor from './BodyEditor';
 import Preview from './Preview';
+import LanguageSelect from './LanguageSelect';
+import SimpleSelect from './SimpleSelect';
 
 interface Props {
   snippet: Snippet | null;
@@ -9,19 +11,27 @@ interface Props {
   allSnippets: Snippet[];
   onSave: (snippet: Snippet, previousName?: string) => void;
   onDelete: (snippet: Snippet) => void;
+  onDraftChange?: (draft: Snippet | null) => void;
 }
 
-const SCOPES = ['global', 'workspace', 'javascript', 'typescript', 'python', 'css', 'html', 'json'];
+type ScopeType = 'global' | 'workspace' | 'language';
+
+function getScopeType(scope: string): ScopeType {
+  if (scope === 'global') return 'global';
+  if (scope === 'workspace') return 'workspace';
+  return 'language';
+}
 
 function emptySnippet(): Snippet {
   return { id: crypto.randomUUID(), name: '', prefix: '', description: '', body: [''], scope: 'global', source: '' };
 }
 
-export default function EditorPane({ snippet, isNew, allSnippets, onSave, onDelete }: Props) {
+export default function EditorPane({ snippet, isNew, allSnippets, onSave, onDelete, onDraftChange }: Props) {
   const [draft, setDraft] = useState<Snippet | null>(null);
   const [originalName, setOriginalName] = useState<string | undefined>(undefined);
   const [saveError, setSaveError] = useState('');
   const [confirmDelete, setConfirmDelete] = useState(false);
+  const [editorLanguage, setEditorLanguage] = useState('plaintext');
 
   useEffect(() => {
     if (isNew) {
@@ -29,16 +39,27 @@ export default function EditorPane({ snippet, isNew, allSnippets, onSave, onDele
       setOriginalName(undefined);
       setSaveError('');
       setConfirmDelete(false);
+      setEditorLanguage('plaintext');
     } else if (snippet) {
       setDraft({ ...snippet });
       setOriginalName(snippet.name);
       setSaveError('');
       setConfirmDelete(false);
+      const st = getScopeType(snippet.scope);
+      setEditorLanguage(st === 'language' ? snippet.scope : 'plaintext');
     } else {
       setDraft(null);
       setOriginalName(undefined);
     }
   }, [snippet, isNew]);
+
+  useEffect(() => {
+    if (isNew && draft) {
+      onDraftChange?.(draft);
+    } else {
+      onDraftChange?.(null);
+    }
+  }, [draft, isNew]);
 
   if (!draft) {
     return (
@@ -48,20 +69,42 @@ export default function EditorPane({ snippet, isNew, allSnippets, onSave, onDele
     );
   }
 
+  const scopeType = getScopeType(draft.scope);
+
   const hasDuplicatePrefix = allSnippets.some(
     s => s.prefix === draft.prefix && s.scope === draft.scope && s.id !== draft.id
   );
 
+  function handleScopeTypeChange(newType: ScopeType) {
+    if (newType === 'global') {
+      setDraft({ ...draft, scope: 'global' });
+    } else if (newType === 'workspace') {
+      setDraft({ ...draft, scope: 'workspace' });
+    } else {
+      const lang = editorLanguage !== 'plaintext' ? editorLanguage : 'javascript';
+      setDraft({ ...draft, scope: lang });
+      setEditorLanguage(lang);
+    }
+  }
+
+  function handleEditorLanguageChange(lang: string) {
+    setEditorLanguage(lang);
+    if (scopeType === 'language') {
+      setDraft({ ...draft, scope: lang });
+    }
+  }
+
   function handleSave() {
-    if (!draft!.prefix.trim()) { setSaveError('Prefix is required.'); return; }
-    if (!draft!.name.trim())   { setSaveError('Name is required.');   return; }
-    const prevName = originalName !== draft!.name ? originalName : undefined;
-    onSave(draft!, prevName);
+    if (!draft.prefix.trim()) { setSaveError('Prefix is required.'); return; }
+    const derivedName = draft.description.trim() || draft.prefix.trim();
+    const snippetToSave = { ...draft, name: derivedName };
+    const prevName = originalName && originalName !== derivedName ? originalName : undefined;
+    onSave(snippetToSave, prevName);
     setSaveError('');
   }
 
   function handleDuplicate() {
-    setDraft({ ...draft!, id: crypto.randomUUID(), prefix: `copy-of-${draft!.prefix}`, name: `copy of ${draft!.name}` });
+    setDraft({ ...draft, id: crypto.randomUUID(), name: '', prefix: `copy-of-${draft.prefix}`, source: '' });
     setOriginalName(undefined);
   }
 
@@ -88,26 +131,28 @@ export default function EditorPane({ snippet, isNew, allSnippets, onSave, onDele
           />
         </div>
         <div className="field">
-          <label>Name (key)</label>
-          <input
-            value={draft.name}
-            onChange={e => setDraft({ ...draft, name: e.target.value })}
-            placeholder="e.g. arrow function"
-          />
-        </div>
-        <div className="field">
           <label>Scope</label>
-          <select value={draft.scope} onChange={e => setDraft({ ...draft, scope: e.target.value })}>
-            {SCOPES.map(s => <option key={s} value={s}>{s}</option>)}
-          </select>
+          <SimpleSelect
+            value={scopeType}
+            options={[
+              { value: 'global', label: 'Global' },
+              { value: 'workspace', label: 'Workspace' },
+              { value: 'language', label: 'Language' },
+            ]}
+            onChange={v => handleScopeTypeChange(v as ScopeType)}
+          />
         </div>
       </div>
 
       <div className="body-section">
-        <label>Body</label>
+        <div className="body-header">
+          <label>Body</label>
+          <LanguageSelect value={editorLanguage} onChange={handleEditorLanguageChange} />
+        </div>
         <BodyEditor
           value={draft.body.join('\n')}
           onChange={val => setDraft({ ...draft, body: val.split('\n') })}
+          language={editorLanguage}
         />
       </div>
 
