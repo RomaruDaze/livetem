@@ -15,3 +15,4 @@ docs/**
 package-lock.json
 *.vsix
 out/test/**
+images/**
