@@ -6,11 +6,12 @@ interface Props {
   snippets: Snippet[];
   selectedId: string | null;
   draftPreview?: Snippet | null;
+  dirtySnippetId?: string | null;
   onSelect: (id: string) => void;
   onNew: () => void;
 }
 
-export default function SnippetList({ snippets, selectedId, draftPreview, onSelect, onNew }: Props) {
+export default function SnippetList({ snippets, selectedId, draftPreview, dirtySnippetId, onSelect, onNew }: Props) {
   const [search, setSearch] = useState('');
   const [scopeFilter, setScopeFilter] = useState('all');
 
@@ -72,7 +73,10 @@ export default function SnippetList({ snippets, selectedId, draftPreview, onSele
           >
             <span className="snippet-prefix">{snippet.prefix}</span>
             <span className="snippet-desc">{snippet.description || snippet.name}</span>
-            <span className="snippet-scope-badge">{snippet.scope}</span>
+            {snippet.id === dirtySnippetId
+              ? <span className="preview-dot">●</span>
+              : <span className="snippet-scope-badge">{snippet.scope}</span>
+            }
           </div>
         ))}
       </div>

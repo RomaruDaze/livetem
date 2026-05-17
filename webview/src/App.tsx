@@ -64,6 +64,8 @@ export default function App() {
     snippets: [], selectedId: null, isNew: false, error: null,
   });
   const [draftPreview, setDraftPreview] = useState<Snippet | null>(null);
+  const [isDirtyFlag, setIsDirtyFlag] = useState(false);
+  const dirtySnippetId = isDirtyFlag ? state.selectedId : null;
 
   useEffect(() => {
     // Tell the host we are ready — host will send init + optional startNew
@@ -96,6 +98,7 @@ export default function App() {
         snippets={state.snippets}
         selectedId={state.selectedId}
         draftPreview={draftPreview}
+        dirtySnippetId={dirtySnippetId}
         onSelect={id => dispatch({ type: 'SELECT', id })}
         onNew={() => dispatch({ type: 'NEW' })}
       />
@@ -106,6 +109,7 @@ export default function App() {
         onSave={(snippet, previousName) => vscode.postMessage({ type: 'save', snippet, previousName })}
         onDelete={snippet => vscode.postMessage({ type: 'delete', id: snippet.id, name: snippet.name, source: snippet.source })}
         onDraftChange={setDraftPreview}
+        onDirtyChange={setIsDirtyFlag}
       />
     </div>
   );
