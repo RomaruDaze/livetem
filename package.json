@@ -15,6 +15,29 @@
     "commands": [
       { "command": "livetem.open",    "title": "Snippet Manager: Open",        "icon": "media/icon.svg" },
       { "command": "livetem.openNew", "title": "Snippet Manager: New Snippet", "icon": "media/icon.svg" }
+    ],
+    "viewsContainers": {
+      "activitybar": [
+        {
+          "id": "livetem-sidebar",
+          "title": "LiveTem",
+          "icon": "media/icon.svg"
+        }
+      ]
+    },
+    "views": {
+      "livetem-sidebar": [
+        {
+          "id": "livetem.launcherView",
+          "name": "Snippet Manager"
+        }
+      ]
+    },
+    "viewsWelcome": [
+      {
+        "view": "livetem.launcherView",
+        "contents": "Manage your VS Code snippets with LiveTem.\n[Open Snippet Manager](command:livetem.open)\n[New Snippet](command:livetem.openNew)"
+      }
     ]
   },
   "scripts": {
