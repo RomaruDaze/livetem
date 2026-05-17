@@ -251,6 +251,11 @@ body {
 
 .btn-primary:hover { background: var(--vscode-button-hoverBackground); }
 
+.btn-primary:disabled {
+  opacity: 0.4;
+  cursor: default;
+}
+
 .btn-secondary {
   background: var(--vscode-button-secondaryBackground);
   color: var(--vscode-button-secondaryForeground);
