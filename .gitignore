@@ -4,3 +4,4 @@ webview/dist/
 webview/node_modules/
 *.vsix
 .DS_Store
+packages/
