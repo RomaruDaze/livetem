@@ -1,4 +1,4 @@
-import React, { useEffect, useReducer } from 'react';
+import React, { useEffect, useReducer, useState } from 'react';
 import { Snippet, HostMessage } from './types';
 import SnippetList from './SnippetList';
 import EditorPane from './EditorPane';
@@ -63,6 +63,7 @@ export default function App() {
   const [state, dispatch] = useReducer(reducer, {
     snippets: [], selectedId: null, isNew: false, error: null,
   });
+  const [draftPreview, setDraftPreview] = useState<Snippet | null>(null);
 
   useEffect(() => {
     // Tell the host we are ready — host will send init + optional startNew
@@ -94,6 +95,7 @@ export default function App() {
       <SnippetList
         snippets={state.snippets}
         selectedId={state.selectedId}
+        draftPreview={draftPreview}
         onSelect={id => dispatch({ type: 'SELECT', id })}
         onNew={() => dispatch({ type: 'NEW' })}
       />
@@ -103,6 +105,7 @@ export default function App() {
         allSnippets={state.snippets}
         onSave={(snippet, previousName) => vscode.postMessage({ type: 'save', snippet, previousName })}
         onDelete={snippet => vscode.postMessage({ type: 'delete', id: snippet.id, name: snippet.name, source: snippet.source })}
+        onDraftChange={setDraftPreview}
       />
     </div>
   );

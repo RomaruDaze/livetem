@@ -1,14 +1,16 @@
 import React, { useState, useMemo } from 'react';
+import SimpleSelect from './SimpleSelect';
 import { Snippet } from './types';
 
 interface Props {
   snippets: Snippet[];
   selectedId: string | null;
+  draftPreview?: Snippet | null;
   onSelect: (id: string) => void;
   onNew: () => void;
 }
 
-export default function SnippetList({ snippets, selectedId, onSelect, onNew }: Props) {
+export default function SnippetList({ snippets, selectedId, draftPreview, onSelect, onNew }: Props) {
   const [search, setSearch] = useState('');
   const [scopeFilter, setScopeFilter] = useState('all');
 
@@ -37,19 +39,26 @@ export default function SnippetList({ snippets, selectedId, onSelect, onNew }: P
           value={search}
           onChange={e => setSearch(e.target.value)}
         />
-        <select
-          className="scope-select"
+        <SimpleSelect
+          className="full-width"
           value={scopeFilter}
-          onChange={e => setScopeFilter(e.target.value)}
-        >
-          {scopes.map(s => (
-            <option key={s} value={s}>{s === 'all' ? 'All scopes' : s}</option>
-          ))}
-        </select>
+          options={scopes.map(s => ({ value: s, label: s === 'all' ? 'All scopes' : s }))}
+          onChange={setScopeFilter}
+        />
         <button className="new-btn" onClick={onNew}>+ New</button>
       </div>
       <div className="list-items">
-        {filtered.length === 0 && (
+        {draftPreview && (
+          <div className="snippet-row-preview" aria-label="Unsaved new snippet">
+            {draftPreview.prefix
+              ? <span className="snippet-prefix">{draftPreview.prefix}</span>
+              : <span className="snippet-prefix preview-untitled">Untitled</span>
+            }
+            <span className="snippet-desc">{draftPreview.description}</span>
+            <span className="preview-dot">●</span>
+          </div>
+        )}
+        {filtered.length === 0 && !draftPreview && (
           <div className="empty-state">No snippets found</div>
         )}
         {filtered.map(snippet => (
