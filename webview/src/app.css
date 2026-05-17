@@ -124,3 +124,148 @@ body {
   opacity: 0.5;
   text-align: center;
 }
+
+/* EditorPane */
+.editor-pane {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  padding: 16px;
+  gap: 12px;
+  overflow-y: auto;
+  height: 100vh;
+}
+
+.editor-empty {
+  align-items: center;
+  justify-content: center;
+  opacity: 0.5;
+  font-size: 13px;
+}
+
+.field-row {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  min-width: 120px;
+}
+
+.field-wide { flex: 1; }
+
+.field label, .body-section > label, .preview-section > label {
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  opacity: 0.6;
+}
+
+.field input, .field select {
+  background: var(--vscode-input-background);
+  color: var(--vscode-input-foreground);
+  border: 1px solid var(--vscode-input-border, transparent);
+  border-radius: 2px;
+  padding: 4px 7px;
+  font-size: 12px;
+  outline: none;
+}
+
+.field input:focus, .field select:focus {
+  border-color: var(--vscode-focusBorder);
+}
+
+.field-warning {
+  font-size: 10px;
+  color: var(--vscode-inputValidation-warningForeground);
+}
+
+.body-section, .preview-section {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.action-bar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding-top: 8px;
+  border-top: 1px solid var(--vscode-panel-border);
+  flex-wrap: wrap;
+}
+
+.save-error {
+  font-size: 11px;
+  color: var(--vscode-inputValidation-errorForeground);
+  flex: 1;
+}
+
+.delete-confirm-label {
+  font-size: 12px;
+  opacity: 0.8;
+}
+
+.btn-primary {
+  background: var(--vscode-button-background);
+  color: var(--vscode-button-foreground);
+  border: none;
+  border-radius: 2px;
+  padding: 5px 14px;
+  cursor: pointer;
+  font-size: 12px;
+}
+
+.btn-primary:hover { background: var(--vscode-button-hoverBackground); }
+
+.btn-secondary {
+  background: var(--vscode-button-secondaryBackground);
+  color: var(--vscode-button-secondaryForeground);
+  border: none;
+  border-radius: 2px;
+  padding: 5px 12px;
+  cursor: pointer;
+  font-size: 12px;
+}
+
+.btn-secondary:hover { background: var(--vscode-button-secondaryHoverBackground); }
+
+.btn-danger {
+  background: var(--vscode-inputValidation-errorBackground);
+  color: var(--vscode-inputValidation-errorForeground);
+  border: 1px solid var(--vscode-inputValidation-errorBorder);
+  border-radius: 2px;
+  padding: 5px 12px;
+  cursor: pointer;
+  font-size: 12px;
+}
+
+/* BodyEditor */
+.body-editor-wrap {
+  border: 1px solid var(--vscode-input-border, transparent);
+  border-radius: 2px;
+  overflow: hidden;
+}
+
+.body-editor-wrap:focus-within {
+  border-color: var(--vscode-focusBorder);
+}
+
+/* Preview */
+.preview-block {
+  background: var(--vscode-textBlockQuote-background, rgba(127,127,127,0.1));
+  border-left: 3px solid var(--vscode-textBlockQuote-border, rgba(127,127,127,0.5));
+  padding: 8px 12px;
+  font-family: var(--vscode-editor-font-family, 'Courier New', monospace);
+  font-size: 12px;
+  white-space: pre-wrap;
+  word-break: break-all;
+  border-radius: 0 2px 2px 0;
+  color: var(--vscode-foreground);
+  opacity: 0.85;
+  min-height: 40px;
+}
