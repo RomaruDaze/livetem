@@ -13,8 +13,8 @@
   "main": "./out/extension.js",
   "contributes": {
     "commands": [
-      { "command": "livetem.open",    "title": "Snippet Manager: Open" },
-      { "command": "livetem.openNew", "title": "Snippet Manager: New Snippet" }
+      { "command": "livetem.open",    "title": "Snippet Manager: Open",        "icon": "media/icon.svg" },
+      { "command": "livetem.openNew", "title": "Snippet Manager: New Snippet", "icon": "media/icon.svg" }
     ]
   },
   "scripts": {
