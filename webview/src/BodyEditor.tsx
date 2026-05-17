@@ -4,14 +4,15 @@ import Editor from '@monaco-editor/react';
 interface Props {
   value: string;
   onChange: (value: string) => void;
+  language?: string;
 }
 
-export default function BodyEditor({ value, onChange }: Props) {
+export default function BodyEditor({ value, onChange, language = 'plaintext' }: Props) {
   return (
     <div className="body-editor-wrap">
       <Editor
         height="200px"
-        language="plaintext"
+        language={language}
         theme="vs-dark"
         value={value}
         onChange={val => onChange(val ?? '')}
@@ -25,6 +26,9 @@ export default function BodyEditor({ value, onChange }: Props) {
           overviewRulerLanes: 0,
           folding: false,
           padding: { top: 6, bottom: 6 },
+          autoIndent: 'full',
+          tabSize: 4,
+          insertSpaces: true,
         }}
       />
     </div>

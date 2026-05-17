@@ -1,0 +1,17 @@
+.gitignore
+tsconfig.json
+src/**
+webview/src/**
+webview/node_modules/**
+webview/package.json
+webview/package-lock.json
+webview/tsconfig.json
+webview/vite.config.ts
+webview/index.html
+docs/**
+.claude/**
+.superpowers/**
+.vscode/**
+package-lock.json
+*.vsix
+out/test/**

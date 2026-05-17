@@ -50,12 +50,21 @@ export class PanelManager {
       }
       if (msg.type === 'save') {
         try {
-          // Resolve source path for new snippets (source is empty string when isNew)
-          const snippet = msg.snippet.source
-            ? msg.snippet
-            : { ...msg.snippet, source: this.provider.resolveSourcePath(msg.snippet.scope) };
-          const saved = await this.provider.saveSnippet(snippet, msg.previousName);
-          this.panel?.webview.postMessage({ type: 'saved', snippet: saved });
+          const expectedSource = this.provider.resolveSourcePath(msg.snippet.scope);
+          const oldSource = msg.snippet.source;
+
+          if (oldSource && oldSource !== expectedSource) {
+            // Scope changed — delete from old file, save to new file
+            await this.provider.deleteSnippet(msg.previousName ?? msg.snippet.name, oldSource);
+            const movedSnippet = { ...msg.snippet, source: expectedSource };
+            const saved = await this.provider.saveSnippet(movedSnippet, undefined);
+            this.panel?.webview.postMessage({ type: 'saved', snippet: saved });
+          } else {
+            // New snippet (no source yet) or same file — resolve source if needed
+            const snippet = oldSource ? msg.snippet : { ...msg.snippet, source: expectedSource };
+            const saved = await this.provider.saveSnippet(snippet, msg.previousName);
+            this.panel?.webview.postMessage({ type: 'saved', snippet: saved });
+          }
         } catch (e) {
           this.panel?.webview.postMessage({ type: 'error', message: String(e) });
         }

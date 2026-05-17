@@ -1,0 +1,72 @@
+<h2>How should the snippet list be organized?</h2>
+<p class="subtitle">The left panel — how you browse and find your snippets</p>
+
+<div class="cards">
+
+  <div class="card" data-choice="grouped" onclick="toggleSelect(this)">
+    <div class="card-image">
+      <div style="background:#252526;border-radius:6px;padding:8px;height:155px;font-size:10px;color:#ccc;overflow:hidden;">
+        <input class="mock-input" placeholder="🔍 Search..." style="width:100%;box-sizing:border-box;margin-bottom:6px;font-size:10px;padding:3px 6px;">
+        <div style="color:#888;font-size:9px;text-transform:uppercase;letter-spacing:1px;margin-bottom:3px;">🌐 Global (12)</div>
+        <div style="padding:3px 8px;background:#094771;border-radius:2px;margin-bottom:2px;border-left:2px solid #007acc;">cl → console.log()</div>
+        <div style="padding:3px 8px;margin-bottom:2px;color:#bbb;">fn → arrow function</div>
+        <div style="padding:3px 8px;margin-bottom:5px;color:#bbb;">imp → import statement</div>
+        <div style="color:#888;font-size:9px;text-transform:uppercase;letter-spacing:1px;margin-bottom:3px;">📁 Workspace (3)</div>
+        <div style="padding:3px 8px;margin-bottom:2px;color:#bbb;">api → fetch call</div>
+        <div style="color:#888;font-size:9px;text-transform:uppercase;letter-spacing:1px;margin-top:3px;margin-bottom:3px;">JS (5) · PY (2)</div>
+        <div style="padding:3px 8px;color:#bbb;">rfc → React component</div>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>A — Grouped by Scope</h3>
+      <p>Snippets grouped under collapsible headers: Global, Workspace, then language-specific. Easy to see what lives where. Classic tree-view feel.</p>
+    </div>
+  </div>
+
+  <div class="card" data-choice="flat" onclick="toggleSelect(this)">
+    <div class="card-image">
+      <div style="background:#252526;border-radius:6px;padding:8px;height:155px;font-size:10px;color:#ccc;overflow:hidden;">
+        <div style="display:flex;gap:4px;margin-bottom:6px;">
+          <input class="mock-input" placeholder="🔍 Search..." style="flex:1;font-size:10px;padding:3px 6px;">
+          <select style="background:#3c3c3c;border:1px solid #555;color:#ccc;border-radius:3px;font-size:10px;padding:2px 4px;">
+            <option>All</option>
+          </select>
+        </div>
+        <div style="padding:4px 8px;background:#094771;border-radius:2px;margin-bottom:2px;border-left:2px solid #007acc;display:flex;justify-content:space-between;"><span>cl → console.log()</span><span style="font-size:8px;color:#888;background:#1a3a5c;padding:1px 4px;border-radius:2px;">Global</span></div>
+        <div style="padding:4px 8px;margin-bottom:2px;color:#bbb;display:flex;justify-content:space-between;"><span>fn → arrow function</span><span style="font-size:8px;color:#888;background:#2a2a2a;padding:1px 4px;border-radius:2px;">Global·JS</span></div>
+        <div style="padding:4px 8px;margin-bottom:2px;color:#bbb;display:flex;justify-content:space-between;"><span>api → fetch call</span><span style="font-size:8px;color:#888;background:#2a2a2a;padding:1px 4px;border-radius:2px;">Workspace</span></div>
+        <div style="padding:4px 8px;margin-bottom:2px;color:#bbb;display:flex;justify-content:space-between;"><span>imp → import</span><span style="font-size:8px;color:#888;background:#2a2a2a;padding:1px 4px;border-radius:2px;">Global</span></div>
+        <div style="padding:4px 8px;color:#bbb;display:flex;justify-content:space-between;"><span>rfc → React component</span><span style="font-size:8px;color:#888;background:#2a2a2a;padding:1px 4px;border-radius:2px;">Global·JS</span></div>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>B — Flat List + Filter Dropdown</h3>
+      <p>All snippets in one flat list with scope shown as a badge. A dropdown filters by scope. Search works across everything. Faster to scan when you have many snippets.</p>
+    </div>
+  </div>
+
+  <div class="card" data-choice="tabs" onclick="toggleSelect(this)">
+    <div class="card-image">
+      <div style="background:#252526;border-radius:6px;overflow:hidden;height:155px;font-size:10px;color:#ccc;">
+        <div style="display:flex;background:#1e1e1e;border-bottom:1px solid #3c3c3c;">
+          <div style="padding:5px 10px;background:#252526;color:#fff;border-top:2px solid #007acc;font-size:10px;">🌐 Global</div>
+          <div style="padding:5px 10px;color:#888;font-size:10px;">📁 Workspace</div>
+          <div style="padding:5px 10px;color:#888;font-size:10px;">JS</div>
+          <div style="padding:5px 9px;color:#888;font-size:10px;">…</div>
+        </div>
+        <div style="padding:6px 8px;">
+          <input class="mock-input" placeholder="🔍 Search global..." style="width:100%;box-sizing:border-box;margin-bottom:5px;font-size:10px;padding:3px 6px;">
+          <div style="padding:3px 8px;background:#094771;border-radius:2px;margin-bottom:2px;border-left:2px solid #007acc;">cl → console.log()</div>
+          <div style="padding:3px 8px;margin-bottom:2px;color:#bbb;">fn → arrow function</div>
+          <div style="padding:3px 8px;margin-bottom:2px;color:#bbb;">imp → import statement</div>
+          <div style="padding:3px 8px;color:#bbb;">log → logger.info()</div>
+        </div>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>C — Tabs per Scope</h3>
+      <p>Global / Workspace / JS / Python… each gets its own tab. Clean separation, no mixing. Easy to manage one scope at a time. Tab per language can get long with many languages.</p>
+    </div>
+  </div>
+
+</div>

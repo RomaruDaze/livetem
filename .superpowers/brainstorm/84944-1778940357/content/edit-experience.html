@@ -1,0 +1,102 @@
+<h2>How should creating/editing a snippet feel?</h2>
+<p class="subtitle">When you click a snippet or hit "+ New", what happens next?</p>
+
+<div class="cards">
+
+  <div class="card" data-choice="inline" onclick="toggleSelect(this)">
+    <div class="card-image">
+      <div style="background:#1e1e1e;border-radius:6px;overflow:hidden;height:150px;padding:8px;font-size:10px;color:#ccc;">
+        <div style="display:flex;gap:6px;margin-bottom:6px;">
+          <input class="mock-input" placeholder="🔍 Search snippets..." style="flex:1;font-size:10px;padding:3px 6px;">
+          <div style="background:#007acc;border-radius:3px;padding:3px 8px;font-size:10px;">+ New</div>
+        </div>
+        <div style="background:#2a2d2e;border-radius:3px;padding:5px 8px;margin-bottom:2px;display:flex;justify-content:space-between;align-items:center;">
+          <span><span style="color:#4ec9b0;">cl</span> — console.log()</span>
+          <span style="color:#555;font-size:9px;">Global · JS</span>
+        </div>
+        <!-- Expanded row -->
+        <div style="background:#094771;border-radius:3px;padding:6px 8px;margin-bottom:2px;border-left:2px solid #007acc;">
+          <div style="display:flex;gap:6px;margin-bottom:4px;">
+            <div style="flex:1"><div style="color:#888;font-size:9px;margin-bottom:2px;">PREFIX</div><div style="background:#1e1e1e;border-radius:2px;padding:2px 5px;">fn</div></div>
+            <div style="flex:2"><div style="color:#888;font-size:9px;margin-bottom:2px;">DESCRIPTION</div><div style="background:#1e1e1e;border-radius:2px;padding:2px 5px;">arrow function</div></div>
+            <div style="flex:1"><div style="color:#888;font-size:9px;margin-bottom:2px;">SCOPE</div><div style="background:#1e1e1e;border-radius:2px;padding:2px 5px;">JS</div></div>
+          </div>
+          <div style="color:#888;font-size:9px;margin-bottom:2px;">BODY</div>
+          <div style="background:#1e1e1e;border-radius:2px;padding:4px 5px;font-family:monospace;font-size:9px;color:#9cdcfe;">const $1 = ($2) => {<br>&nbsp;&nbsp;$0<br>}</div>
+        </div>
+        <div style="background:#2a2d2e;border-radius:3px;padding:5px 8px;display:flex;justify-content:space-between;">
+          <span><span style="color:#4ec9b0;">imp</span> — import statement</span>
+          <span style="color:#555;font-size:9px;">Global</span>
+        </div>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>A — Inline Expand</h3>
+      <p>Click a snippet row and it expands in place. Edit fields directly inline. Fast and contextual — you never leave the list.</p>
+    </div>
+  </div>
+
+  <div class="card" data-choice="split" onclick="toggleSelect(this)">
+    <div class="card-image">
+      <div style="display:flex;background:#1e1e1e;border-radius:6px;overflow:hidden;height:150px;font-size:10px;color:#ccc;">
+        <!-- Left list -->
+        <div style="width:140px;background:#252526;padding:6px;border-right:1px solid #3c3c3c;">
+          <div style="background:#007acc;border-radius:3px;padding:3px 6px;font-size:10px;text-align:center;margin-bottom:6px;">+ New</div>
+          <div style="padding:4px 5px;color:#888;font-size:9px;margin-bottom:2px;text-transform:uppercase;letter-spacing:1px;">Global</div>
+          <div style="padding:3px 5px;color:#bbb;">cl → console.log</div>
+          <div style="background:#094771;padding:3px 5px;color:#fff;border-radius:2px;border-left:2px solid #007acc;">fn → arrow fn</div>
+          <div style="padding:3px 5px;color:#bbb;">imp → import</div>
+          <div style="padding:4px 5px;color:#888;font-size:9px;margin-top:4px;margin-bottom:2px;text-transform:uppercase;letter-spacing:1px;">Workspace</div>
+          <div style="padding:3px 5px;color:#bbb;">api → fetch</div>
+        </div>
+        <!-- Right editor -->
+        <div style="flex:1;padding:8px;">
+          <div style="color:#ccc;margin-bottom:6px;font-weight:600;">fn — arrow function</div>
+          <div style="display:flex;gap:5px;margin-bottom:4px;">
+            <div style="flex:1"><div style="color:#888;font-size:9px;">PREFIX</div><div style="background:#3c3c3c;border-radius:2px;padding:2px 5px;margin-top:2px;">fn</div></div>
+            <div style="flex:1"><div style="color:#888;font-size:9px;">SCOPE</div><div style="background:#3c3c3c;border-radius:2px;padding:2px 5px;margin-top:2px;">JavaScript</div></div>
+          </div>
+          <div style="color:#888;font-size:9px;margin-bottom:2px;">DESCRIPTION</div>
+          <div style="background:#3c3c3c;border-radius:2px;padding:2px 5px;margin-bottom:4px;">arrow function</div>
+          <div style="color:#888;font-size:9px;margin-bottom:2px;">BODY</div>
+          <div style="background:#1a1a1a;border-radius:2px;padding:4px;font-family:monospace;font-size:9px;color:#9cdcfe;border:1px solid #444;">const $1 = ($2) => {<br>&nbsp;&nbsp;$0<br>}</div>
+        </div>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>B — Split Pane</h3>
+      <p>Left: scrollable list of snippets. Right: form editor for the selected snippet. Like a settings or mail client layout. Clean separation between browsing and editing.</p>
+    </div>
+  </div>
+
+  <div class="card" data-choice="modal" onclick="toggleSelect(this)">
+    <div class="card-image">
+      <div style="position:relative;background:#1e1e1e;border-radius:6px;overflow:hidden;height:150px;font-size:10px;color:#ccc;padding:6px;">
+        <!-- Background list (dimmed) -->
+        <div style="opacity:0.3;">
+          <div style="background:#2a2d2e;border-radius:3px;padding:4px 6px;margin-bottom:3px;">cl → console.log()</div>
+          <div style="background:#2a2d2e;border-radius:3px;padding:4px 6px;margin-bottom:3px;">fn → arrow function</div>
+        </div>
+        <!-- Modal overlay -->
+        <div style="position:absolute;inset:8px;background:#252526;border-radius:6px;border:1px solid #555;padding:8px;box-shadow:0 4px 20px rgba(0,0,0,0.6);">
+          <div style="font-weight:600;margin-bottom:6px;color:#fff;">Edit Snippet</div>
+          <div style="display:flex;gap:5px;margin-bottom:4px;">
+            <div style="flex:1"><div style="color:#888;font-size:9px;">PREFIX</div><div style="background:#3c3c3c;border-radius:2px;padding:2px 5px;margin-top:1px;">fn</div></div>
+            <div style="flex:2"><div style="color:#888;font-size:9px;">DESCRIPTION</div><div style="background:#3c3c3c;border-radius:2px;padding:2px 5px;margin-top:1px;">arrow function</div></div>
+          </div>
+          <div style="color:#888;font-size:9px;margin-bottom:1px;">BODY</div>
+          <div style="background:#1a1a1a;border-radius:2px;padding:4px;font-family:monospace;font-size:9px;color:#9cdcfe;margin-bottom:5px;border:1px solid #444;">const $1 = ($2) => {<br>&nbsp;&nbsp;$0<br>}</div>
+          <div style="display:flex;justify-content:flex-end;gap:5px;">
+            <div style="background:#3c3c3c;border-radius:3px;padding:2px 8px;">Cancel</div>
+            <div style="background:#007acc;border-radius:3px;padding:2px 8px;">Save</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>C — Modal Dialog</h3>
+      <p>Clicking a snippet opens a modal overlay with a focused form. Explicit Save/Cancel. Familiar pattern, focused editing experience.</p>
+    </div>
+  </div>
+
+</div>
