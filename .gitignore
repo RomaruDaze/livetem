@@ -5,3 +5,4 @@ webview/node_modules/
 *.vsix
 .DS_Store
 packages/
+icon.png
