@@ -2,7 +2,7 @@
 
 A UI for creating and editing VS Code snippets.
 
-![LiveTem demo](images/demo-editor.gif)
+![LiveTem demo](images/demo.gif)
 
 ## Features
 
@@ -10,10 +10,6 @@ A UI for creating and editing VS Code snippets.
 - Manage snippet scope (global, workspace, language-specific)
 - Syntax highlighting and language selection for snippet bodies
 - Unsaved-changes indicators
-
-| Sidebar Launcher | Command Palette | New Snippet |
-|:---:|:---:|:---:|
-| ![Sidebar launcher](images/demo-sidebar.gif) | ![Command palette](images/demo-command-palette.gif) | ![New snippet](images/demo-new-snippet.gif) |
 
 ## Usage
 
