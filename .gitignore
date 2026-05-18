@@ -6,3 +6,7 @@ webview/node_modules/
 .DS_Store
 packages/
 icon.png
+.claude/
+.superpowers/
+.vscode/
+docs/
