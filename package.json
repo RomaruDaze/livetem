@@ -2,19 +2,34 @@
   "name": "livetem",
   "displayName": "LiveTem — Snippet Manager",
   "description": "A UI for creating and editing VS Code snippets",
-  "version": "1.1.1",
+  "version": "1.1.2",
   "publisher": "romarudaze",
   "license": "MIT",
-  "repository": { "type": "git", "url": "https://github.com/RomaruDaze/livetem" },
-  "engines": { "vscode": "^1.85.0" },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/RomaruDaze/livetem"
+  },
+  "engines": {
+    "vscode": "^1.85.0"
+  },
   "icon": "icon.png",
-  "categories": ["Other"],
+  "categories": [
+    "Other"
+  ],
   "activationEvents": [],
   "main": "./out/extension.js",
   "contributes": {
     "commands": [
-      { "command": "livetem.open",    "title": "Snippet Manager: Open",        "icon": "media/icon.svg" },
-      { "command": "livetem.openNew", "title": "Snippet Manager: New Snippet", "icon": "media/icon.svg" }
+      {
+        "command": "livetem.open",
+        "title": "Snippet Manager: Open",
+        "icon": "media/icon.svg"
+      },
+      {
+        "command": "livetem.openNew",
+        "title": "Snippet Manager: New Snippet",
+        "icon": "media/icon.svg"
+      }
     ],
     "viewsContainers": {
       "activitybar": [
@@ -41,17 +56,17 @@
     ]
   },
   "scripts": {
-    "compile":       "tsc -p ./",
-    "watch":         "tsc -p ./ --watch",
+    "compile": "tsc -p ./",
+    "watch": "tsc -p ./ --watch",
     "build:webview": "cd webview && npm run build",
-    "build":         "npm run compile && npm run build:webview",
-    "test":          "vitest run src/test",
+    "build": "npm run compile && npm run build:webview",
+    "test": "vitest run src/test",
     "vscode:prepublish": "npm run build"
   },
   "devDependencies": {
-    "@types/node":   "^20.0.0",
+    "@types/node": "^20.0.0",
     "@types/vscode": "^1.85.0",
-    "typescript":    "^5.3.0",
-    "vitest":        "^1.2.0"
+    "typescript": "^5.3.0",
+    "vitest": "^1.2.0"
   }
 }
