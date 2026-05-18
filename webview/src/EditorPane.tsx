@@ -118,11 +118,6 @@ export default function EditorPane({ snippet, isNew, allSnippets, onSave, onDele
     setSaveError('');
   }
 
-  function handleDuplicate() {
-    setDraft({ ...draft, id: crypto.randomUUID(), name: '', prefix: `copy-of-${draft.prefix}`, source: '' });
-    setOriginalName(undefined);
-  }
-
   return (
     <div className="editor-pane">
       <div className="field-row">
@@ -179,7 +174,6 @@ export default function EditorPane({ snippet, isNew, allSnippets, onSave, onDele
       <div className="action-bar">
         {saveError && <span className="save-error">{saveError}</span>}
         <button className="btn-primary" onClick={handleSave} disabled={!isDirty}>Save</button>
-        <button className="btn-secondary" onClick={handleDuplicate}>Duplicate</button>
         {snippet && !isNew && (
           confirmDelete ? (
             <>
